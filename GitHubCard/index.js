@@ -1,9 +1,11 @@
+import axios from 'axios';
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-
+axios.get("https://api.github.com/users/IsaacGHoward")
+.then(res => console.log(res.data))
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -16,7 +18,20 @@
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
-
+const cards = document.querySelector('.cards')
+axios.get("https://api.github.com/users/IsaacGHoward")
+.then(res => {
+  cards.appendChild(cardCreator(res.data));
+  axios.get('https://api.github.com/users/IsaacGHoward/following')
+  .then(res => {
+    for( let user in res.data){
+      axios.get(`https://api.github.com/users/${res.data[user].login}`)
+      .then(res => {
+        cards.appendChild(cardCreator(res.data));
+      })
+    }
+  });
+})
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
     follow this link in your browser https://api.github.com/users/<Your github name>/followers,
@@ -49,7 +64,52 @@ const followersArray = [];
       </div>
     </div>
 */
+function cardCreator(userData){
+  const card = document.createElement('div');
+  card.classList.add('card');
 
+  const img = document.createElement('img');
+  img.src = userData.avatar_url;
+
+  const info = document.createElement('div');
+  info.classList.add('card-info');
+
+  card.appendChild(img); card.appendChild(info);
+
+  const name = document.createElement('h3');
+  name.classList.add('name');
+  name.innerHTML = userData.name;
+
+  const username = document.createElement('p');
+  username.classList.add('username');
+  username.innerHTML = userData.login;
+
+  const location = document.createElement('p');
+  location.innerHTML = `Location: ${userData.location}`;
+
+  const profile = document.createElement('p');
+  profile.innerHTML = "Profile:";
+
+  const profLink = document.createElement('a');
+  profLink.href = userData.html_url;
+  profLink.innerHTML = userData.html_url;
+
+  profile.appendChild(profLink);
+
+  const followers = document.createElement('p');
+  followers.innerHTML = `Followers: ${userData.followers}`
+
+  const following = document.createElement('p');
+  following.innerHTML = `Following: ${userData.following}`
+
+  const bio = document.createElement('p');
+  bio.innerHTML = `Bio: ${userData.bio}`
+
+  info.appendChild(name); info.appendChild(username); info.appendChild(location); info.appendChild(profile); 
+  info.appendChild(followers); info.appendChild(following); info.appendChild(bio); 
+
+  return(card);
+}
 /*
   List of LS Instructors Github username's:
     tetondan

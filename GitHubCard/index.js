@@ -18,7 +18,11 @@ axios.get("https://api.github.com/users/IsaacGHoward")
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
-
+const cards = document.querySelector('.cards')
+axios.get("https://api.github.com/users/IsaacGHoward")
+.then(res => {
+  cards.appendChild(cardCreator(res.data));
+})
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
     follow this link in your browser https://api.github.com/users/<Your github name>/followers,

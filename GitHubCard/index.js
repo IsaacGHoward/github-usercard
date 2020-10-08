@@ -22,6 +22,15 @@ const cards = document.querySelector('.cards')
 axios.get("https://api.github.com/users/IsaacGHoward")
 .then(res => {
   cards.appendChild(cardCreator(res.data));
+  axios.get('https://api.github.com/users/IsaacGHoward/following')
+  .then(res => {
+    for( let user in res.data){
+      axios.get(`https://api.github.com/users/${res.data[user].login}`)
+      .then(res => {
+        cards.appendChild(cardCreator(res.data));
+      })
+    }
+  });
 })
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
